@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<project default="javadoc">
+    <target name="javadoc">
+        <javadoc locale="en_US" access="public" additionalparam=" -windowtitle &quot;e3roid - 2D OpenGL game engine for Android API Specification&quot;" author="true" classpath="." destdir="doc" doctitle="e3roid - 2D OpenGL game engine for Android API Specification" nodeprecated="false" nodeprecatedlist="false" noindex="false" nonavbar="false" notree="false" packagenames="com.e3roid.opengl,com.e3roid.script.lua,com.e3roid.event,com.e3roid.drawable.modifier.function,com.e3roid.drawable.sprite,com.e3roid.util,com.e3roid.drawable.controls,com.e3roid.audio,com.e3roid.lifecycle,com.e3roid.drawable.tmx,org.connectbot.service,com.e3roid.drawable,com.e3roid.drawable.texture,com.e3roid.physics,com.e3roid.script.javascript,org.connectbot.transport,com.e3roid.drawable.modifier,com.e3roid.script" source="1.6" sourcefiles="src/com/e3roid/E3Scene.java,src/com/e3roid/E3Activity.java,src/com/e3roid/E3Engine.java,src/com/e3roid/package-info.java" sourcepath="src;gen" splitindex="true" use="true" version="true"/>
+    </target>
+</project>
