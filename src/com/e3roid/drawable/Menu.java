@@ -1,31 +1,34 @@
-/*
- * Copyright (c) 2010-2011 e3roid project
- * All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
- * 
- * * Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
- * * Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
- * * Neither the name of the project nor the names of its contributors may be used to endorse or promote products derived from this software without specific prior written permission.
- * 
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- * 
- */
 package com.e3roid.drawable;
 
 import java.util.ArrayList;
 
+import android.view.MotionEvent;
 import javax.microedition.khronos.opengles.GL10;
 
 import com.e3roid.E3Activity;
 import com.e3roid.E3Engine;
+import com.e3roid.E3Scene;
+import com.e3roid.drawable.Drawable;
+import com.e3roid.drawable.Sprite;
+import com.e3roid.drawable.Shape;
+import com.e3roid.drawable.modifier.AlphaModifier;
+import com.e3roid.drawable.modifier.ProgressModifier;
+import com.e3roid.drawable.modifier.function.Linear;
+import com.e3roid.drawable.sprite.AnimatedSprite;
+import com.e3roid.drawable.texture.Texture;
+import com.e3roid.drawable.texture.TiledTexture;
+
+import com.e3roid.interfaces.IRun;
+
+
 
 /**
  * A drawable class that represents menu of the scene.
  */
-public class Menu implements Drawable {
+public class Menu implements Drawable{
 
 	private ArrayList<Sprite> menuItems = new ArrayList<Sprite>();
+	private ArrayList<Sprite> backgroundItems = new ArrayList<Sprite>();
 	private ArrayList<Sprite> removedItems = new ArrayList<Sprite>();
 	private ArrayList<Sprite> loadableItems = new ArrayList<Sprite>();
 	
@@ -34,6 +37,82 @@ public class Menu implements Drawable {
 	private int totalHeight = 0;
 	private int totalWidth  = 0;
 
+	private Sprite[] menuSprites;
+	private IRun linkToClass;
+	private E3Scene scene;
+	private int indexItem;
+	public boolean  effect;
+	
+	
+	public  Menu(Sprite[] spites, E3Scene scene, IRun linkToClass){
+		this.linkToClass=linkToClass;
+		this.menuSprites=spites;		
+		this.scene=scene;
+		this.effect=false;
+		for (int i=0; i<menuSprites.length; i++){
+			scene.addEventListener(menuSprites[i]);
+		}
+	}
+	
+	public Menu(E3Scene scene, IRun linkToClass){
+		this.linkToClass=linkToClass;
+		this.scene=scene;
+		indexItem=-1;
+		this.effect=false;
+	}
+	
+	public Menu(Texture[] textures,  E3Scene scene, final IRun linkToClass){
+		this.linkToClass=linkToClass;
+		menuSprites=new Sprite [textures.length];
+		this.scene=scene;
+		this.effect=false;
+		for (int i=0; i<textures.length;i++){
+			indexItem=i;
+			menuSprites[i]= new Sprite(textures[i]){
+					public boolean onTouchEvent(E3Scene scene, Shape shape,
+							MotionEvent motionEvent, int localX, int localY) {
+						if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
+							linkToClass.runMethodByIndex(indexItem);
+						}
+						return false;
+					}
+			};
+			this.scene.addEventListener(menuSprites[i]);
+		}
+	}
+	
+	private AnimatedSprite makeAnimation(TiledTexture texture, int X, int Y,  int countFrames, int msecAnim, final boolean useEffects){
+		// Add animation frames from tile.
+		ArrayList<AnimatedSprite.Frame> frames = new ArrayList<AnimatedSprite.Frame>();
+		final IRun linkToClass=this.linkToClass;
+		indexItem=indexItem+1;
+		final int tmp=indexItem;
+		int j=0;
+		
+		while (j!=countFrames){
+			frames.add(new AnimatedSprite.Frame(j, 0));
+			j=j+1;
+		}
+		
+		
+		AnimatedSprite sprite = new AnimatedSprite(texture, X, Y){
+				public boolean onTouchEvent(E3Scene scene, Shape shape,
+						MotionEvent motionEvent, int localX, int localY) {
+					if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
+						if (useEffects==true ){ 
+							ProgressModifier modifier =  new ProgressModifier(new AlphaModifier(0, 1, 0), 1000, Linear.getInstance());
+							this.addModifier(modifier);
+						}
+						linkToClass.runMethodByIndex(tmp);
+					}
+					return false;
+				}
+			};
+		sprite.animate(msecAnim, frames);
+		return sprite;
+	}
+	
+	
 	/**
 	 * Add sprite as menu item to the menu
 	 * @param menuItem Sprite
@@ -42,13 +121,83 @@ public class Menu implements Drawable {
 		loadableItems.add(menuItem);
 		totalHeight += menuItem.getHeight();
 		totalWidth  += menuItem.getWidth();
+		this.scene.addEventListener(menuItem);
 	}
 
+	public void addToBackgroundLayer(Sprite s){
+		backgroundItems.add(s);
+	}
+	
 	/**
 	 * Remove menu item from the menu
 	 * @param menuItem Sprite
 	 */
+	
+
+	public void add(TiledTexture texture,  int countFrames, int msecAnim){
+		Sprite sp=this.makeAnimation(texture, 0, 0, countFrames, msecAnim, this.effect);
+		this.add(sp);
+		this.scene.addEventListener(sp);
+	}
+	
+	public void add(TiledTexture texture,  int countFrames, int msecAnim, boolean useEffects){
+		Sprite sp=this.makeAnimation(texture, 0, 0, countFrames, msecAnim, useEffects);
+		this.add(sp);
+		this.scene.addEventListener(sp);
+	}
+	
+	public void add(Texture menuItem){
+		final IRun linkToClass=this.linkToClass;
+		indexItem=indexItem+1;
+		final int tmp=indexItem;
+		final boolean effect = this.effect;
+		
+		Sprite sp=new Sprite(menuItem){
+			public boolean onTouchEvent(E3Scene scene, Shape shape,
+					MotionEvent motionEvent, int localX, int localY) {
+				if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
+					if (effect==true ){ 
+						ProgressModifier modifier =  new ProgressModifier(new AlphaModifier(0, 1, 0), 1000, Linear.getInstance());
+						this.addModifier(modifier);
+					}
+					linkToClass.runMethodByIndex(tmp);
+				}
+				return false;
+			}
+		};
+		this.add(sp);
+		this.scene.addEventListener(sp);
+	}
+	
+	public void add(Texture menuItem, final boolean useEffects){
+		final IRun linkToClass=this.linkToClass;
+		indexItem=indexItem+1;
+		final int tmp=indexItem;
+		
+		Sprite sp=new Sprite(menuItem){
+			public boolean onTouchEvent(E3Scene scene, Shape shape,
+					MotionEvent motionEvent, int localX, int localY) {
+				if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
+					if (useEffects==true ){ 
+						ProgressModifier modifier =  new ProgressModifier(new AlphaModifier(0, 1, 0), 1000, Linear.getInstance());
+						this.addModifier(modifier);
+					}
+					linkToClass.runMethodByIndex(tmp);
+				}
+				return false;
+			}
+		};
+		this.add(sp);
+		this.scene.addEventListener(sp);
+	}
+	
+
+	
+	
+	
+	
 	public void remove(Sprite menuItem) {
+		this.scene.removeEventListener(menuItem);
 		removedItems.add(menuItem);
 		totalHeight -= menuItem.getHeight();
 		totalWidth  -= menuItem.getWidth();
@@ -102,6 +251,9 @@ public class Menu implements Drawable {
 	 */
 	@Override
 	public void onResume() {
+		for (Sprite Item : backgroundItems) {
+			Item.onResume();
+		}
 		for (Sprite menuItem : menuItems) {
 			menuItem.onResume();
 		}
@@ -113,6 +265,9 @@ public class Menu implements Drawable {
 	 */
 	@Override
 	public void onPause() {
+		for (Sprite Item : backgroundItems) {
+			Item.onPause();
+		}
 		for (Sprite menuItem : menuItems) {
 			menuItem.onPause();
 		}
@@ -123,6 +278,9 @@ public class Menu implements Drawable {
 	 */
 	@Override
 	public void onDispose() {
+		for (Sprite Item : backgroundItems) {
+			Item.onDispose();
+		}
 		for (Sprite menuItem : menuItems) {
 			menuItem.onDispose();
 		}
@@ -135,6 +293,10 @@ public class Menu implements Drawable {
 	@Override
 	public void onDraw(GL10 gl) {
 		if (!loadableItems.isEmpty()) {
+			for (Sprite Item : backgroundItems){ 
+				Item.onLoadEngine(engine);
+				Item.onLoadSurface(gl);
+			}
 			for (Sprite menuItem : loadableItems) {
 				menuItem.onLoadEngine(engine);
 				menuItem.onLoadSurface(gl);
@@ -142,9 +304,13 @@ public class Menu implements Drawable {
 			}
 			loadableItems.clear();
 		}
+		for (Sprite Item : backgroundItems){ 
+			Item.onDraw(gl);
+		}
 		for (Sprite menuItem : menuItems) {
 			menuItem.onDraw(gl);
 		}
+
 		if (!removedItems.isEmpty()) {
 			for (Sprite menuItem : removedItems) {
 				menuItems.remove(menuItem);
@@ -179,6 +345,9 @@ public class Menu implements Drawable {
 	@Override
 	public void onLoadSurface(GL10 gl, boolean force) {
 		if (force) {
+			for (Sprite Item : backgroundItems){ 
+				Item.onLoadSurface(gl, true);
+			}
 			for (Sprite menuItem : menuItems) {
 				menuItem.onLoadSurface(gl, true);
 			}

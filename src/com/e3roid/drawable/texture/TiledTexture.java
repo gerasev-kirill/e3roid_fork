@@ -13,7 +13,9 @@
  */
 package com.e3roid.drawable.texture;
 
+import java.util.Hashtable;
 
+import com.e3roid.util.E3Hash;
 import android.content.Context;
 
 public class TiledTexture extends AssetTexture {
@@ -23,6 +25,7 @@ public class TiledTexture extends AssetTexture {
 	private final int tileHeight;
 	private final int border;
 	private final int margin;
+	private E3Hash e3Hash;
 	
 	public TiledTexture(String name, int width, int height, Context context) {
 		this(name, width, height, 0, 0, 0, 0, context, Option.DEFAULT);
@@ -46,6 +49,11 @@ public class TiledTexture extends AssetTexture {
 		this.tileHeight = height;
 		this.border = border;
 		this.margin = margin;
+	}
+	
+
+	public TiledTexture(Hashtable hashFileName, Context context){
+		this(((String) hashFileName.get("metaName")), (Integer)hashFileName.get("x"), (Integer)hashFileName.get("y"), 0, 0, 0, 0, context);
 	}
 	
 	public void setTileIndex(int xindex, int yindex) {

@@ -17,12 +17,14 @@ import javax.microedition.khronos.opengles.GL10;
 import javax.microedition.khronos.opengles.GL11;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Hashtable;
 
 import android.os.SystemClock;
 import com.e3roid.drawable.Sprite;
 import com.e3roid.drawable.texture.TiledTexture;
 import com.e3roid.event.AnimationEventListener;
 import com.e3roid.opengl.FastFloatBuffer;
+import com.e3roid.util.E3Hash;
 import com.e3roid.util.IntPair;
 
 /**
@@ -63,11 +65,33 @@ public class AnimatedSprite extends Sprite {
 		createBuffers();
 	}
 
+	
+	public AnimatedSprite(TiledTexture texture, int X, int Y,  int countFrames, int msecAnim){
+		this(texture,X,Y,countFrames,msecAnim,null);
+	}
+	
+	public AnimatedSprite(TiledTexture texture,int X, int Y,Hashtable hashFileName, String fileName){
+		this(texture,X,Y , (Integer)hashFileName.get("frames"),(Integer)hashFileName.get("sec"));
+	}
+	
+	public AnimatedSprite(TiledTexture texture, int X, int Y,  int countFrames, int msecAnim, AnimationEventListener listener){
+		this(texture,X,Y, listener);
+		ArrayList<Frame> frames = new ArrayList<Frame>();
+		for (int j=0; j!=countFrames; j++){
+			frames.add(new AnimatedSprite.Frame(j, 0));
+			
+		}
+		this.animate(msecAnim, frames);
+	}
+	
+	
 	/**
 	 * Called to draw the sprite.
 	 * This method is responsible for drawing the sprite. 
 	 */
 	@Override
+	
+	
 	public void onDraw(GL10 _gl) {
 		GL11 gl = (GL11)_gl;
 		
