@@ -24,8 +24,8 @@ import android.view.MotionEvent;
 
 import com.e3roid.drawable.Drawable;
 import com.e3roid.drawable.Layer;
-import com.e3roid.drawable.Menu;
 import com.e3roid.drawable.Shape;
+import com.e3roid.interfaces.IWidget;
 import com.e3roid.lifecycle.E3LifeCycle;
 import com.e3roid.event.FrameListener;
 import com.e3roid.event.SceneEventListener;
@@ -37,7 +37,7 @@ import com.e3roid.opengl.GLHelper;
  */
 public class E3Scene implements E3LifeCycle {
 
-	protected static final String MENU_LAYER = "com.e3roid.drawable.Menu";
+	protected static final String WIDGET_LAYER = "com.e3roid.drawable.Widget";
 	
 	protected E3Engine engine;
 	protected Layer backgroundLayer = new Layer();
@@ -338,25 +338,25 @@ public class E3Scene implements E3LifeCycle {
 	}
 	
 	/**
-	 * Show menu if menu exists. 
+	 * Show widget if widget exists. 
 	 */
-	public void showMenu() {
-		setCurrentLayerName(MENU_LAYER);
+	public void showWidget() {
+		setCurrentLayerName(WIDGET_LAYER);
 	}
 
 	/**
-	 * Hide menu and reset to default layer
+	 * Hide widget and reset to default layer
 	 */
-	public void hideMenu() {
+	public void hideWidget() {
 		resetNamedLayer();
 	}
 	
 	/**
-	 * Indicates whether menu is visible or not. 
+	 * Indicates whether widget is visible or not. 
 	 * @return
 	 */
-	public boolean isMenuVisible() {
-		return MENU_LAYER.equals(getCurrentLayerName());
+	public boolean isWidgetVisible() {
+		return WIDGET_LAYER.equals(getCurrentLayerName());
 	}
 	
 	/**
@@ -585,32 +585,32 @@ public class E3Scene implements E3LifeCycle {
 	}
 	
 	/**
-	 * Add given menu item to menu of the scene.
+	 * Add given IWidget item to widget of the scene.
 	 * 
-	 * @param menuItem the menu item
+	 * @param widgetItem the widget item
 	 */
-	public void addMenu(Menu menuItem) {
-		Layer layer = namedLayers.get(MENU_LAYER);
+	public void addWidget(IWidget widgetItem) {
+		Layer layer = namedLayers.get(WIDGET_LAYER);
 		if (layer == null) {
 			layer = new Layer();
 		}
 		
-		layer.add(menuItem);
-		addNamedLayer(MENU_LAYER, layer);
+		layer.add(widgetItem);
+		addNamedLayer(WIDGET_LAYER, layer);
 	}
 
 	/**
-	 * Remove given menu item from menu of the scene 
+	 * Remove given widget item from widget of the scene 
 	 * 
-	 * @param menuItem the menu item
+	 * @param widgetItem the widget item
 	 */
-	public void removeMenu(Menu menuItem) {
-		Layer layer = namedLayers.get(MENU_LAYER);
+	public void removeWidget(IWidget widgetItem) {
+		Layer layer = namedLayers.get(WIDGET_LAYER);
 		
 		if (layer != null) {
-			layer.remove(menuItem);
+			layer.remove(widgetItem);
 			if (layer.size() == 0) {
-				removeNamedLayer(MENU_LAYER);
+				removeNamedLayer(WIDGET_LAYER);
 			}
 		}
 	}

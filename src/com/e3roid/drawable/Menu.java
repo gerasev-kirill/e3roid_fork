@@ -8,7 +8,6 @@ import javax.microedition.khronos.opengles.GL10;
 import com.e3roid.E3Activity;
 import com.e3roid.E3Engine;
 import com.e3roid.E3Scene;
-import com.e3roid.drawable.Drawable;
 import com.e3roid.drawable.Sprite;
 import com.e3roid.drawable.Shape;
 import com.e3roid.drawable.modifier.AlphaModifier;
@@ -19,13 +18,14 @@ import com.e3roid.drawable.texture.Texture;
 import com.e3roid.drawable.texture.TiledTexture;
 
 import com.e3roid.interfaces.IRun;
+import com.e3roid.interfaces.IWidget;
 
 
 
 /**
  * A drawable class that represents menu of the scene.
  */
-public class Menu implements Drawable{
+public class Menu implements  IWidget{
 
 	private ArrayList<Sprite> menuItems = new ArrayList<Sprite>();
 	private ArrayList<Sprite> backgroundItems = new ArrayList<Sprite>();
@@ -190,11 +190,6 @@ public class Menu implements Drawable{
 		this.add(sp);
 		this.scene.addEventListener(sp);
 	}
-	
-
-	
-	
-	
 	
 	public void remove(Sprite menuItem) {
 		this.scene.removeEventListener(menuItem);
