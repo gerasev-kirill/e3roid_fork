@@ -12,6 +12,7 @@ import com.e3roid.E3Scene;
 import com.e3roid.drawable.Sprite;
 import com.e3roid.drawable.sprite.TextSprite;
 import com.e3roid.interfaces.IWidget;
+import com.e3roid.interfaces.IWidgetBase;
 
 
 
@@ -82,17 +83,17 @@ public class ProgressBar implements  IWidget{
 	 * Move menu to the vertical center
 	 * @param context E3Activity
 	 */
-	public void layoutVerticalCenter(E3Activity context) {
-		int startY = (context.getHeight() - totalHeight) / 2;	
+	public void layoutVerticalCenter(IWidgetBase parent) {
+		int startY = (parent.getHeight() - totalHeight) / 2;	
 		
-		startY = moveVerticalCenter(widgetItems, startY, context);
-		startY = moveVerticalCenter(loadableItems, startY, context);
+		startY = moveVerticalCenter(widgetItems, startY, parent);
+		startY = moveVerticalCenter(loadableItems, startY, parent);
 	}
 	
-	private int moveVerticalCenter(ArrayList<Sprite> items, int startY, E3Activity context) {
+	private int moveVerticalCenter(ArrayList<Sprite> items, int startY, IWidgetBase parent) {
 		for (Sprite widgetItem : items) {
 			widgetItem.move(
-					(context.getWidth() - widgetItem.getWidth()) / 2,
+					(parent.getWidth() - widgetItem.getWidth()) / 2,
 					startY);
 			startY += widgetItem.getHeight();
 		}
@@ -101,20 +102,20 @@ public class ProgressBar implements  IWidget{
 	
 	/**
 	 * Move menu to the horizontal center.
-	 * @param context E3Activity
+	 * @param IWidgetBase parent
 	 */
-	public void layoutHorizontalCenter(E3Activity context) {
-		int startX = (context.getWidth() - totalWidth) / 2;	
+	public void layoutHorizontalCenter(IWidgetBase parent ) {
+		int startX = (parent.getWidth() - totalWidth) / 2;	
 		
-		startX = moveHorizontalCenter(widgetItems, startX, context);
-		startX = moveHorizontalCenter(loadableItems, startX, context);
+		startX = moveHorizontalCenter(widgetItems, startX, parent);
+		startX = moveHorizontalCenter(loadableItems, startX, parent);
 	}
 
-	private int moveHorizontalCenter(ArrayList<Sprite> items, int startX, E3Activity context) {
+	private int moveHorizontalCenter(ArrayList<Sprite> items, int startX, IWidgetBase parent ) {
 		for (Sprite widgetItem : items) {
 			widgetItem.move(
 					startX,
-					(context.getHeight() - widgetItem.getHeight()) / 2);
+					(parent.getHeight() - widgetItem.getHeight()) / 2);
 			startX += widgetItem.getWidth();
 		}
 		return startX;
@@ -255,4 +256,5 @@ public class ProgressBar implements  IWidget{
 	public boolean contains(int x, int y) {
 		return false;
 	}
+
 }

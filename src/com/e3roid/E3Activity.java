@@ -29,6 +29,7 @@ import android.widget.FrameLayout.LayoutParams;
 
 import com.e3roid.event.SceneEventListener;
 import com.e3roid.event.SceneOnKeyListener;
+import com.e3roid.interfaces.IWidgetBase;
 import com.e3roid.opengl.RenderSurfaceView;
 
 /**
@@ -37,7 +38,7 @@ import com.e3roid.opengl.RenderSurfaceView;
  *  
  *  @see android.app.Activity
  */
-public abstract class E3Activity extends Activity implements SceneEventListener {
+public abstract class E3Activity extends Activity implements SceneEventListener, IWidgetBase {
 	/**
 	 * Constant for landscape orientation 
 	 */
@@ -237,6 +238,10 @@ public abstract class E3Activity extends Activity implements SceneEventListener 
 		return engine.getHeight();
 	}
 	
+	public int[] getPosition(){
+		int[] pos={0,0};
+		return pos;
+	}
 	/**
 	 * Post the specified action to event queue to run on the scene update thread.
 	 * 

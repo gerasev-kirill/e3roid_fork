@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import android.view.MotionEvent;
 import javax.microedition.khronos.opengles.GL10;
 
-import com.e3roid.E3Activity;
 import com.e3roid.E3Engine;
 import com.e3roid.E3Scene;
 import com.e3roid.drawable.Sprite;
@@ -19,6 +18,7 @@ import com.e3roid.drawable.texture.TiledTexture;
 
 import com.e3roid.interfaces.IRun;
 import com.e3roid.interfaces.IWidget;
+import com.e3roid.interfaces.IWidgetBase;
 
 
 
@@ -128,12 +128,6 @@ public class Menu implements  IWidget{
 		backgroundItems.add(s);
 	}
 	
-	/**
-	 * Remove menu item from the menu
-	 * @param menuItem Sprite
-	 */
-	
-
 	public void add(TiledTexture texture,  int countFrames, int msecAnim){
 		Sprite sp=this.makeAnimation(texture, 0, 0, countFrames, msecAnim, this.effect);
 		this.add(sp);
@@ -191,6 +185,11 @@ public class Menu implements  IWidget{
 		this.scene.addEventListener(sp);
 	}
 	
+	/**
+	 * Remove menu item from the menu
+	 * @param menuItem Sprite
+	 */
+	
 	public void remove(Sprite menuItem) {
 		this.scene.removeEventListener(menuItem);
 		removedItems.add(menuItem);
@@ -202,17 +201,18 @@ public class Menu implements  IWidget{
 	 * Move menu to the vertical center
 	 * @param context E3Activity
 	 */
-	public void layoutVerticalCenter(E3Activity context) {
-		int startY = (context.getHeight() - totalHeight) / 2;	
+	
+	public void layoutVerticalCenter(IWidgetBase parent) {
+		int startY = (parent.getHeight() - totalHeight) / 2;	
 		
-		startY = moveVerticalCenter(menuItems, startY, context);
-		startY = moveVerticalCenter(loadableItems, startY, context);
+		startY = moveVerticalCenter(menuItems, startY, parent);
+		startY = moveVerticalCenter(loadableItems, startY, parent);
 	}
 	
-	private int moveVerticalCenter(ArrayList<Sprite> items, int startY, E3Activity context) {
+	private int moveVerticalCenter(ArrayList<Sprite> items, int startY, IWidgetBase parent) {
 		for (Sprite menuItem : items) {
 			menuItem.move(
-					(context.getWidth() - menuItem.getWidth()) / 2,
+					(parent.getWidth() - menuItem.getWidth()) / 2,
 					startY);
 			startY += menuItem.getHeight();
 		}
@@ -223,18 +223,18 @@ public class Menu implements  IWidget{
 	 * Move menu to the horizontal center.
 	 * @param context E3Activity
 	 */
-	public void layoutHorizontalCenter(E3Activity context) {
-		int startX = (context.getWidth() - totalWidth) / 2;	
+	public void layoutHorizontalCenter(IWidgetBase parent) {
+		int startX = (parent.getWidth() - totalWidth) / 2;	
 		
-		startX = moveHorizontalCenter(menuItems, startX, context);
-		startX = moveHorizontalCenter(loadableItems, startX, context);
+		startX = moveHorizontalCenter(menuItems, startX, parent);
+		startX = moveHorizontalCenter(loadableItems, startX, parent);
 	}
 
-	private int moveHorizontalCenter(ArrayList<Sprite> items, int startX, E3Activity context) {
+	private int moveHorizontalCenter(ArrayList<Sprite> items, int startX, IWidgetBase parent) {
 		for (Sprite menuItem : items) {
 			menuItem.move(
 					startX,
-					(context.getHeight() - menuItem.getHeight()) / 2);
+					(parent.getHeight() - menuItem.getHeight()) / 2);
 			startX += menuItem.getWidth();
 		}
 		return startX;

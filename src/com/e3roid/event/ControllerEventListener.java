@@ -14,6 +14,7 @@
 package com.e3roid.event;
 
 import com.e3roid.drawable.controls.StickController;
+import com.e3roid.interfaces.IController;
 
 /**
  * A listener class for receiving notification of controller update event
@@ -22,5 +23,5 @@ public interface ControllerEventListener {
 	/*
 	 * stick controller update event. relativeX and relativeY takes value from -100 to +100.
 	 */
-	void onControlUpdate(StickController controller, int relativeX, int relativeY, boolean hasChanged);
+	void onControlUpdate(IController controller, int relativeX, int relativeY, boolean hasChanged);
 }

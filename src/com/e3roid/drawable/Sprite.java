@@ -16,7 +16,10 @@ package com.e3roid.drawable;
 import javax.microedition.khronos.opengles.GL10;
 import javax.microedition.khronos.opengles.GL11;
 
+import com.e3roid.E3Activity;
+import com.e3roid.E3Scene;
 import com.e3roid.drawable.texture.Texture;
+import com.e3roid.drawable.texture.TiledTexture;
 import com.e3roid.opengl.FastFloatBuffer;
 import com.e3roid.opengl.GLHelper;
 import com.e3roid.util.Debug;
@@ -25,6 +28,12 @@ import com.e3roid.util.Debug;
  * A Sprite class is used to draw 2D rectangle shape with texture.
  */
 public class Sprite extends Shape {
+	public static final int TOP_RIGHT_CORNER = 1;
+	public static final int TOP_LEFT_CORNER = 2;
+	public static final int BOTTOM_LEFT_CORNER = 3;
+	public static final int BOTTOM_RIGHT_CORNER = 4;
+	public static final int CENTER = 0;
+
 
 	protected Texture texture;
 	protected final int[] GENERATED_TEXTURE_BUFFER_ID = new int[1];
@@ -58,6 +67,51 @@ public class Sprite extends Shape {
 		createBuffers();
 	}
 	
+	public Sprite(Texture texture, int positionPolicy, E3Activity context){
+		this.texture = texture;
+		setSize(texture.getWidth(), texture.getHeight());
+		int xy[]=this.getFromPolicyXY(texture, positionPolicy, context);
+		setPosition(xy[0], xy[1]);
+		useDefaultRotationAndScaleCenter();
+		createBuffers();
+	}
+	
+	
+	
+	private int[] getFromPolicyXY(Texture texture, int positionPolicy, E3Activity context){
+		int x=0,y=0;
+		int tx=0,ty=0;
+		tx=texture.getWidth();
+		ty=texture.getHeight();
+		if (positionPolicy==Sprite.TOP_LEFT_CORNER){
+			x=0;
+			y=0;
+		}
+		else if (positionPolicy==Sprite.TOP_RIGHT_CORNER){
+			x=context.getWidth()-tx;
+			y=0;
+		}
+		else if (positionPolicy==Sprite.BOTTOM_LEFT_CORNER){
+			x=0;
+			y=context.getHeight()-ty;
+		}
+		else if (positionPolicy==Sprite.BOTTOM_RIGHT_CORNER){
+			x=context.getWidth()-tx;
+			y=context.getHeight()-ty;
+		}
+		return new int[] {x,y};
+	}
+	
+	
+	
+	public void setNewTexture(Texture texture){
+		this.texture = texture;
+		setSize(texture.getWidth(), texture.getHeight());
+		setPosition(x, y);
+		useDefaultRotationAndScaleCenter();
+		createBuffers();
+		this.show();
+	}
 	/**
 	 * Constructs sprite with given position and size.
 	 * Texture width and height are set by parameters.

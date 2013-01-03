@@ -16,6 +16,7 @@ package com.e3roid.drawable.controls;
 import com.e3roid.E3Scene;
 import com.e3roid.drawable.texture.Texture;
 import com.e3roid.event.ControllerEventListener;
+import com.e3roid.interfaces.IController;
 
 /**
  * Digital on-screen controller
@@ -51,7 +52,6 @@ public class DigitalController extends StickController {
 	@Override
 	protected boolean updateControl() {
 		if (moveX == knob.getRealX() && moveY == knob.getRealY()) return false;
-			
 		int relativeX = getRelativeKnobX();
 		int relativeY = getRelativeKnobY();
 		float[] centerCoord = getLocalCenterCoordinates();
@@ -91,6 +91,6 @@ public class DigitalController extends StickController {
 		if (getRelativeKnobY() ==  100) return DOWN;
 		if (getRelativeKnobX() == -100) return LEFT;
 		if (getRelativeKnobX() ==  100) return RIGHT;
-		return CENTER;
+		return IController.CENTER;
 	}
 }

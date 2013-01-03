@@ -22,32 +22,12 @@ import com.e3roid.drawable.Sprite;
 import com.e3roid.drawable.texture.Texture;
 import com.e3roid.event.ControllerEventListener;
 import com.e3roid.event.SceneUpdateListener;
+import com.e3roid.interfaces.IController;
 
 /**
  * On-Screen analog touch controller
  */
-public class StickController extends Sprite implements SceneUpdateListener {
-
-	/**
-	 * Constant for indicating center position
-	 */
-	public static final int CENTER = 0;
-	/**
-	 * Constant for indicating left position
-	 */
-	public static final int LEFT   = 1;
-	/**
-	 * Constant for indicating right position
-	 */
-	public static final int RIGHT  = 2;
-	/**
-	 * Constant for indicating up position
-	 */
-	public static final int UP     = 3;
-	/**
-	 * Constant for indicating down position
-	 */
-	public static final int DOWN   = 4;
+public class StickController extends Sprite implements SceneUpdateListener,IController {
 	
 	protected final E3Scene scene;
 	protected final Sprite knob;
@@ -404,7 +384,7 @@ public class StickController extends Sprite implements SceneUpdateListener {
 			} else if (relativeX < 0) {
 				return LEFT;
 			} else {
-				return CENTER;
+				return IController.CENTER;
 			}
 		} else {
 			if (relativeY > 0) {
@@ -412,7 +392,7 @@ public class StickController extends Sprite implements SceneUpdateListener {
 			} else if (relativeY < 0) {
 				return UP;
 			} else {
-				return CENTER;
+				return IController.CENTER;
 			}
 		}
 	}

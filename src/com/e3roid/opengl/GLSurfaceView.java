@@ -1131,8 +1131,10 @@ public class GLSurfaceView extends SurfaceView implements SurfaceHolder.Callback
                             // Thus, in "safe mode," I force two swaps to occur before 
                             // issuing any GL commands.  Don't ask me how long it took
                             // to figure this out.
-                            if (framesSinceResetHack > 1 || !mSafeMode) {
-                                mRenderer.onDrawFrame(gl);
+                            //kirill
+                            
+                           if (framesSinceResetHack > 1 || !mSafeMode) {
+                               mRenderer.onDrawFrame(gl);
                             } 
                             
                             framesSinceResetHack++;

@@ -31,6 +31,12 @@ public class E3Hash extends Hashtable{
 		return name;
 	}
 	
+	public String getByKey(String name,String key){
+		Hashtable h=new Hashtable();
+		h=(Hashtable) this.get(name);
+		return (String) h.get(key);
+	}
+	
 	private void parseString(String strTmp){
 		htTemp=new Hashtable();
 		htTemp.put("metaName", strTmp.substring(0, strTmp.indexOf("=")-1));
